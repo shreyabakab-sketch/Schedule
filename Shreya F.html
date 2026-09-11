@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shreya — Term V Schedule</title>
+<style>
+  :root{
+    --paper:#F2EFE7;
+    --paper-raised:#FBF9F4;
+    --ink:#1C2434;
+    --ink-soft:#5B6478;
+    --rule:#D8D2C2;
+    --brass:#A9812F;
+    --brass-deep:#7C5E20;
+
+    --me:#3F5C76;
+    --friend:#A0503E;
+    --present:#3F7D63;
+    --absent:#B0592F;
+
+    --c-pfwm:#5B7B9A;
+    --c-tm:#8C5B7A;
+    --c-sncm:#B0592F;
+    --c-ssm:#3F7D63;
+    --c-mss:#6B5B95;
+    --c-sm:#B08928;
+    --c-npd:#3A7D8C;
+    --c-tqms:#6E7B3F;
+  }
+  *{box-sizing:border-box;}
+  html,body{ margin:0; padding:0; background:var(--paper); color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Georgia,"Times New Roman",serif;
+    -webkit-font-smoothing:antialiased; }
+  .sans{ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; }
+
+  .wrap{ max-width:820px; margin:0 auto; padding:36px 22px 80px; }
+
+  header.masthead{
+    border-bottom:2px solid var(--ink); padding-bottom:16px; margin-bottom:22px;
+    display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;
+  }
+  header.masthead .kicker{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:11px; letter-spacing:.14em; color:var(--brass-deep); margin:0 0 6px; text-transform:uppercase;
+  }
+  header.masthead h1{ margin:0; font-size:28px; font-weight:600; letter-spacing:.01em; }
+  header.masthead .cohort{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:12.5px; color:var(--ink-soft); text-align:right; line-height:1.5;
+  }
+
+  /* ---- tabs ---- */
+  .tabs{ display:flex; gap:8px; margin-bottom:24px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; }
+  .tab{
+    flex:1; text-align:center; padding:10px 12px; border:1px solid var(--rule);
+    background:var(--paper-raised); color:var(--ink-soft); border-radius:6px; cursor:pointer;
+    font-size:13.5px; font-weight:600; letter-spacing:.02em; transition:all .15s ease;
+  }
+  .tab .dot{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+  .tab.active{ background:var(--ink); color:#fff; border-color:var(--ink); }
+  .tab:not(.active):hover{ border-color:var(--brass); color:var(--ink); }
+
+  .nav{ display:flex; align-items:center; gap:14px; margin-bottom:6px; }
+  .nav button{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    background:var(--paper-raised); border:1px solid var(--rule); color:var(--ink);
+    width:38px; height:38px; border-radius:50%; font-size:16px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .15s ease, border-color .15s ease; flex:0 0 auto;
+  }
+  .nav button:hover{ background:#fff; border-color:var(--brass); }
+  .nav button:active{ transform:translateY(1px); }
+
+  .date-display{ flex:1; text-align:center; }
+  .date-display .weekday{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:2px;
+  }
+  .date-display .full-date{ font-size:24px; font-weight:600; }
+
+  .date-input-row{ display:flex; justify-content:center; margin:14px 0 30px; }
+  input[type="date"]{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    border:1px solid var(--rule); background:var(--paper-raised); color:var(--ink);
+    padding:8px 12px; border-radius:6px; font-size:14px;
+  }
+  .today-btn{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    margin-left:8px; border:1px solid var(--rule); background:transparent; color:var(--brass-deep);
+    padding:8px 14px; border-radius:6px; font-size:13px; cursor:pointer;
+  }
+  .today-btn:hover{ background:var(--paper-raised); }
+
+  /* ---- solo session list ---- */
+  .sessions{ display:flex; flex-direction:column; gap:14px; }
+  .session-card{
+    background:var(--paper-raised); border:1px solid var(--rule);
+    border-left:5px solid var(--course-color, var(--brass)); border-radius:4px;
+    padding:16px 18px; display:grid; grid-template-columns:96px 1fr; gap:16px; align-items:center;
+  }
+  .session-time{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:13px; color:var(--ink-soft); line-height:1.35;
+    border-right:1px solid var(--rule); padding-right:14px;
+  }
+  .session-time .t1{ font-weight:700; color:var(--ink); font-size:14px; display:block; }
+  .session-main .course-row{ display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin-bottom:4px; }
+  .course-code{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-weight:700; font-size:12px; letter-spacing:.05em; color:#fff;
+    background:var(--course-color, var(--brass)); padding:2px 8px; border-radius:3px;
+  }
+  .course-name{ font-size:17px; font-weight:600; }
+  .session-meta{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:13px; color:var(--ink-soft); display:flex; gap:16px; flex-wrap:wrap; margin-top:4px;
+  }
+  .session-meta span{ display:inline-flex; align-items:center; gap:5px; }
+  .session-meta b{ color:var(--ink); font-weight:600; }
+
+  /* ---- attendance ---- */
+  .attendance-card{
+    background:var(--paper-raised); border:1px solid var(--rule);
+    border-left:5px solid var(--course-color, var(--brass)); border-radius:4px;
+    padding:16px 18px;
+  }
+  .attendance-card .top-row{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .attendance-card .info{ flex:1; min-width:180px; }
+  .mark-buttons{
+    display:flex; gap:8px; flex:0 0 auto;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  }
+  .mark-btn{
+    width:42px; height:42px; border-radius:8px; border:1.5px solid var(--rule);
+    background:var(--paper); font-size:18px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--ink-soft); transition:all .12s ease;
+  }
+  .mark-btn:hover{ border-color:var(--brass); }
+  .mark-btn.present.selected{ background:var(--present); border-color:var(--present); color:#fff; }
+  .mark-btn.absent.selected{ background:var(--absent); border-color:var(--absent); color:#fff; }
+
+  .attendance-summary{
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .attendance-summary-row{
+    display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px;
+    font-size:12.5px; color:var(--ink-soft);
+  }
+  .attendance-summary-row .code-part{ display:flex; align-items:center; gap:8px; }
+  .attendance-summary-row b{ color:var(--ink); }
+  .attendance-bar-track{
+    grid-column:1 / -1; height:5px; border-radius:3px; background:var(--rule); overflow:hidden;
+  }
+  .attendance-bar-fill{ height:100%; background:var(--present); }
+  .attendance-pct{ font-variant-numeric:tabular-nums; font-weight:600; color:var(--ink); }
+
+  /* ---- together view ---- */
+  .together-row{ margin-bottom:12px; }
+  .together-slot-label{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:11.5px; font-weight:600; color:var(--ink-soft); margin-bottom:6px; letter-spacing:.02em;
+  }
+  .together-cells{ display:grid; grid-template-columns:1fr 1fr; gap:8px; align-items:stretch; }
+  .together-cell{
+    background:var(--paper-raised); border:1px solid var(--rule); border-radius:4px;
+    padding:11px 12px; min-height:56px; display:flex; flex-direction:column; justify-content:center;
+    min-width:0;
+  }
+  .together-cell.mine{ border-left:4px solid var(--course-color, var(--me)); }
+  .together-cell.friend{ border-left:4px solid var(--course-color, var(--friend)); }
+  .together-cell.free{
+    border-style:dashed; color:var(--ink-soft); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:12.5px; display:flex; align-items:center; justify-content:center; opacity:.55;
+  }
+  .together-cell .cc-name{ font-size:14.5px; font-weight:600; word-break:break-word; }
+  .together-cell .cc-sub{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:11.5px; color:var(--ink-soft); margin-top:3px; word-break:break-word;
+  }
+  .together-cell.overlap{ box-shadow: inset 0 0 0 1.5px var(--brass); }
+
+  .col-headers{
+    display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft);
+  }
+  .col-headers .ch{ text-align:center; }
+
+  .overlap-banner{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:12.5px; text-align:center; color:var(--brass-deep);
+    background:rgba(169,129,47,.1); border:1px solid rgba(169,129,47,.35);
+    border-radius:6px; padding:8px 10px; margin-bottom:16px;
+  }
+  .free-day-banner{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:12.5px; text-align:center; color:var(--ink-soft);
+    background:var(--paper-raised); border:1px dashed var(--rule);
+    border-radius:6px; padding:8px 10px; margin-bottom:16px;
+  }
+
+  /* ---- empty state (solo) ---- */
+  .empty{ text-align:center; padding:50px 20px 30px; color:var(--ink-soft); }
+  .empty .glyph{ font-size:34px; margin-bottom:10px; opacity:.5; }
+  .empty p{ font-size:16px; margin:0 0 4px; }
+  .empty .next-up{ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; font-size:13px; margin-top:18px; }
+  .empty .next-up a{ color:var(--brass-deep); cursor:pointer; text-decoration:underline; }
+
+  /* ---- legend ---- */
+  .legend{ margin-top:44px; padding-top:18px; border-top:1px solid var(--rule); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; }
+  .legend .legend-title{ font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:12px; }
+  .legend-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px 18px; }
+  .legend-item{ display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--ink-soft); }
+  .legend-swatch{ width:10px;height:10px;border-radius:2px;flex:0 0 auto; }
+  .legend-item b{ color:var(--ink); }
+  .legend-item .prog{ margin-left:auto; font-variant-numeric:tabular-nums; }
+
+  footer.note{ margin-top:30px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size:11.5px; color:var(--ink-soft); text-align:center; }
+
+  @media (max-width:560px){
+    header.masthead{ flex-direction:column; align-items:flex-start; }
+    header.masthead .cohort{ text-align:left; }
+    .session-card{ grid-template-columns:1fr; }
+    .session-time{ border-right:none; border-bottom:1px solid var(--rule); padding-right:0; padding-bottom:8px; }
+  }
+
+  @media (max-width:420px){
+    .wrap{ padding-left:14px; padding-right:14px; }
+    .together-cells{ gap:6px; }
+    .together-cell{ padding:8px 8px; min-height:auto; }
+    .together-cell .cc-name{ font-size:12.5px; line-height:1.25; }
+    .together-cell .cc-sub{ font-size:10px; margin-top:2px; }
+    .together-cell.free{ font-size:11px; }
+    .col-headers{ font-size:9.5px; }
+    .together-slot-label{ font-size:10.5px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div>
+      <p class="kicker">IIM Rohtak · PGP 16</p>
+      <h1 id="pageTitle">Shreya's Term V Schedule</h1>
+    </div>
+    <div class="cohort" id="cohortLabel">PFWM · TM · SNCM · SSM · MSS · SM</div>
+  </header>
+
+  <div class="tabs sans">
+    <div class="tab active" data-view="solo"><span class="dot" style="background:var(--me)"></span>My Classes</div>
+    <div class="tab" data-view="attendance"><span class="dot" style="background:var(--present)"></span>Attendance</div>
+    <div class="tab" data-view="together"><span class="dot" style="background:var(--brass)"></span>Together</div>
+  </div>
+
+  <div class="nav">
+    <button id="prevDay" aria-label="Previous day">&#8249;</button>
+    <div class="date-display">
+      <div class="weekday" id="weekdayLabel">—</div>
+      <div class="full-date" id="fullDateLabel">—</div>
+    </div>
+    <button id="nextDay" aria-label="Next day">&#8250;</button>
+  </div>
+
+  <div class="date-input-row sans">
+    <input type="date" id="datePicker" min="2026-09-12" max="2026-11-30">
+    <button class="today-btn" id="todayBtn">Today</button>
+  </div>
+
+  <div id="content"></div>
+
+  <div class="legend">
+    <p class="legend-title" id="legendTitle">Courses this term</p>
+    <div class="legend-grid" id="legendGrid"></div>
+  </div>
+
+  <footer class="note" id="footNote"></footer>
+
+</div>
+
+<script>
+const DATA = {"me": [{"date": "2026-09-12", "slot": "17:40-18:55", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 1, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-09-12", "slot": "22:25-23:40", "course_code": "SM", "course_name": "Service Marketing", "session": 1, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-14", "slot": "14:30-15:45", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 2, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-09-14", "slot": "19:15-20:30", "course_code": "SM", "course_name": "Service Marketing", "session": 2, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-14", "slot": "20:50-22:05", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 1, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-09-15", "slot": "14:30-15:45", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 1, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-09-15", "slot": "22:25-23:40", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 1, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-09-16", "slot": "08:45-10:00", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 2, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-09-16", "slot": "16:05-17:20", "course_code": "SM", "course_name": "Service Marketing", "session": 3, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-16", "slot": "17:40-18:55", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 3, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-09-17", "slot": "17:40-18:55", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 3, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-09-17", "slot": "22:25-23:40", "course_code": "TM", "course_name": "Talent Management", "session": 1, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-09-18", "slot": "17:40-18:55", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 2, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-09-18", "slot": "19:15-20:30", "course_code": "SM", "course_name": "Service Marketing", "session": 4, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-19", "slot": "08:45-10:00", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 2, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-09-19", "slot": "16:05-17:20", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 4, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-09-19", "slot": "19:15-20:30", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 4, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-09-19", "slot": "22:25-23:40", "course_code": "TM", "course_name": "Talent Management", "session": 2, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-09-21", "slot": "08:45-10:00", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 5, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-09-21", "slot": "16:05-17:20", "course_code": "SM", "course_name": "Service Marketing", "session": 5, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-21", "slot": "17:40-18:55", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 5, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-09-21", "slot": "20:50-22:05", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 3, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-09-22", "slot": "16:05-17:20", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 3, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-09-23", "slot": "14:30-15:45", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 6, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-09-23", "slot": "16:05-17:20", "course_code": "SM", "course_name": "Service Marketing", "session": 6, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-24", "slot": "08:45-10:00", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 4, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-09-24", "slot": "20:50-22:05", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 4, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-09-25", "slot": "16:05-17:20", "course_code": "SM", "course_name": "Service Marketing", "session": 7, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-25", "slot": "17:40-18:55", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 7, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-09-25", "slot": "20:50-22:05", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 6, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-09-26", "slot": "14:30-15:45", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 5, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-09-26", "slot": "19:15-20:30", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 5, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-09-28", "slot": "16:05-17:20", "course_code": "TM", "course_name": "Talent Management", "session": 3, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-09-28", "slot": "19:15-20:30", "course_code": "SM", "course_name": "Service Marketing", "session": 8, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-29", "slot": "16:05-17:20", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 8, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-09-30", "slot": "17:40-18:55", "course_code": "SM", "course_name": "Service Marketing", "session": 9, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-30", "slot": "19:15-20:30", "course_code": "TM", "course_name": "Talent Management", "session": 4, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-09-30", "slot": "20:50-22:05", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 7, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-10-01", "slot": "14:30-15:45", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 6, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-10-01", "slot": "20:50-22:05", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 9, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-10-03", "slot": "16:05-17:20", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 8, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-10-05", "slot": "14:30-15:45", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 9, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-10-05", "slot": "17:40-18:55", "course_code": "TM", "course_name": "Talent Management", "session": 6, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-10-06", "slot": "17:40-18:55", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 7, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-10-07", "slot": "14:30-15:45", "course_code": "TM", "course_name": "Talent Management", "session": 5, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-10-07", "slot": "16:05-17:20", "course_code": "SM", "course_name": "Service Marketing", "session": 10, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-07", "slot": "19:15-20:30", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 6, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-08", "slot": "08:45-10:00", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 10, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-10-09", "slot": "08:45-10:00", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 10, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-10-09", "slot": "14:30-15:45", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 8, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-10-09", "slot": "17:40-18:55", "course_code": "SM", "course_name": "Service Marketing", "session": 11, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-09", "slot": "22:25-23:40", "course_code": "TM", "course_name": "Talent Management", "session": 7, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-10-10", "slot": "19:15-20:30", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 7, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-12", "slot": "14:30-15:45", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 11, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-10-12", "slot": "22:25-23:40", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 11, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-10-13", "slot": "17:40-18:55", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 8, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-13", "slot": "22:25-23:40", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 9, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-10-14", "slot": "16:05-17:20", "course_code": "SM", "course_name": "Service Marketing", "session": 12, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-14", "slot": "19:15-20:30", "course_code": "TM", "course_name": "Talent Management", "session": 8, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-10-15", "slot": "14:30-15:45", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 12, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-10-15", "slot": "16:05-17:20", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 12, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-10-15", "slot": "19:15-20:30", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 10, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-10-15", "slot": "22:25-23:40", "course_code": "SM", "course_name": "Service Marketing", "session": 13, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-16", "slot": "16:05-17:20", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 9, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-17", "slot": "19:15-20:30", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 13, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-10-19", "slot": "19:15-20:30", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 13, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-10-19", "slot": "22:25-23:40", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 10, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-21", "slot": "08:45-10:00", "course_code": "TM", "course_name": "Talent Management", "session": 9, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-10-21", "slot": "17:40-18:55", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 11, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-10-21", "slot": "22:25-23:40", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 14, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-10-22", "slot": "16:05-17:20", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 14, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-10-22", "slot": "19:15-20:30", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 12, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-10-23", "slot": "14:30-15:45", "course_code": "SM", "course_name": "Service Marketing", "session": 14, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-24", "slot": "19:15-20:30", "course_code": "TM", "course_name": "Talent Management", "session": 10, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-10-24", "slot": "22:25-23:40", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 15, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-10-26", "slot": "14:30-15:45", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 11, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-26", "slot": "20:50-22:05", "course_code": "SM", "course_name": "Service Marketing", "session": 15, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-27", "slot": "14:30-15:45", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 13, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-10-27", "slot": "16:05-17:20", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 15, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-10-27", "slot": "19:15-20:30", "course_code": "TM", "course_name": "Talent Management", "session": 11, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-10-28", "slot": "08:45-10:00", "course_code": "SM", "course_name": "Service Marketing", "session": 16, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-28", "slot": "19:15-20:30", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 12, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-29", "slot": "08:45-10:00", "course_code": "TM", "course_name": "Talent Management", "session": 12, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-10-29", "slot": "16:05-17:20", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 16, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-10-30", "slot": "08:45-10:00", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 14, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-10-30", "slot": "17:40-18:55", "course_code": "SM", "course_name": "Service Marketing", "session": 17, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-11-02", "slot": "14:30-15:45", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 17, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-11-03", "slot": "16:05-17:20", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 13, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-03", "slot": "19:15-20:30", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 15, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-11-04", "slot": "08:45-10:00", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 16, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-11-04", "slot": "16:05-17:20", "course_code": "TM", "course_name": "Talent Management", "session": 13, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-11-04", "slot": "20:50-22:05", "course_code": "SM", "course_name": "Service Marketing", "session": 18, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-11-05", "slot": "17:40-18:55", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 18, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-11-06", "slot": "16:05-17:20", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 14, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-06", "slot": "17:40-18:55", "course_code": "TM", "course_name": "Talent Management", "session": 14, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-11-06", "slot": "19:15-20:30", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 16, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-11-13", "slot": "16:05-17:20", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 17, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-11-13", "slot": "17:40-18:55", "course_code": "SM", "course_name": "Service Marketing", "session": 19, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-11-14", "slot": "17:40-18:55", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 15, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-14", "slot": "20:50-22:05", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 17, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-11-17", "slot": "16:05-17:20", "course_code": "TM", "course_name": "Talent Management", "session": 15, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-11-17", "slot": "17:40-18:55", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 18, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-11-17", "slot": "22:25-23:40", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 16, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-18", "slot": "17:40-18:55", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 19, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-11-19", "slot": "14:30-15:45", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 17, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-19", "slot": "16:05-17:20", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 18, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-11-19", "slot": "20:50-22:05", "course_code": "TM", "course_name": "Talent Management", "session": 16, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-11-20", "slot": "17:40-18:55", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 19, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-11-21", "slot": "08:45-10:00", "course_code": "SM", "course_name": "Service Marketing", "session": 20, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-11-21", "slot": "20:50-22:05", "course_code": "TM", "course_name": "Talent Management", "session": 17, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-11-23", "slot": "14:30-15:45", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 20, "faculty": "Dr. Abhishek Yadav", "section": "A", "room": "LR 02"}, {"date": "2026-11-23", "slot": "19:15-20:30", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 18, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-25", "slot": "08:45-10:00", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 19, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-25", "slot": "19:15-20:30", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 19, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-11-26", "slot": "16:05-17:20", "course_code": "SSM", "course_name": "Strategic Storytelling for Managers", "session": 20, "faculty": "Prof. Koustab Ghosh", "section": "B", "room": "LR 07"}, {"date": "2026-11-26", "slot": "17:40-18:55", "course_code": "TM", "course_name": "Talent Management", "session": 18, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-11-27", "slot": "08:45-10:00", "course_code": "PFWM", "course_name": "Personal Finance & Wealth Management", "session": 20, "faculty": "Dr Surbhi Verma", "section": "A", "room": "LR 02"}, {"date": "2026-11-27", "slot": "20:50-22:05", "course_code": "TM", "course_name": "Talent Management", "session": 19, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}, {"date": "2026-11-28", "slot": "16:05-17:20", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 20, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-30", "slot": "16:05-17:20", "course_code": "TM", "course_name": "Talent Management", "session": 20, "faculty": "Dr. Lubna Rashid Malik", "section": "A", "room": "LR 02"}], "friend": [{"date": "2026-09-12", "slot": "16:05-17:20", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 1, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-09-12", "slot": "22:25-23:40", "course_code": "SM", "course_name": "Service Marketing", "session": 1, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-14", "slot": "08:45-10:00", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 2, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-09-14", "slot": "19:15-20:30", "course_code": "SM", "course_name": "Service Marketing", "session": 2, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-14", "slot": "20:50-22:05", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 1, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-09-15", "slot": "19:15-20:30", "course_code": "NPD", "course_name": "New Product Development", "session": 1, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-09-15", "slot": "22:25-23:40", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 1, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-09-16", "slot": "08:45-10:00", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 2, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-09-16", "slot": "16:05-17:20", "course_code": "SM", "course_name": "Service Marketing", "session": 3, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-16", "slot": "19:15-20:30", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 3, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-09-17", "slot": "17:40-18:55", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 3, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-09-18", "slot": "19:15-20:30", "course_code": "SM", "course_name": "Service Marketing", "session": 4, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-18", "slot": "20:50-22:05", "course_code": "NPD", "course_name": "New Product Development", "session": 2, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-09-19", "slot": "08:45-10:00", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 2, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-09-19", "slot": "16:05-17:20", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 4, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-09-19", "slot": "20:50-22:05", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 4, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-09-21", "slot": "08:45-10:00", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 5, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-09-21", "slot": "16:05-17:20", "course_code": "SM", "course_name": "Service Marketing", "session": 5, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-21", "slot": "19:15-20:30", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 5, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-09-22", "slot": "16:05-17:20", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 3, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-09-22", "slot": "20:50-22:05", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 6, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-09-23", "slot": "08:45-10:00", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 7, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-09-23", "slot": "16:05-17:20", "course_code": "SM", "course_name": "Service Marketing", "session": 6, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-24", "slot": "20:50-22:05", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 4, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-09-25", "slot": "16:05-17:20", "course_code": "SM", "course_name": "Service Marketing", "session": 7, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-25", "slot": "20:50-22:05", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 6, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-09-26", "slot": "19:15-20:30", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 5, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-09-28", "slot": "19:15-20:30", "course_code": "SM", "course_name": "Service Marketing", "session": 8, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-29", "slot": "14:30-15:45", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 8, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-09-29", "slot": "22:25-23:40", "course_code": "NPD", "course_name": "New Product Development", "session": 3, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-09-30", "slot": "17:40-18:55", "course_code": "SM", "course_name": "Service Marketing", "session": 9, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-09-30", "slot": "20:50-22:05", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 7, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-10-01", "slot": "16:05-17:20", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 9, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-10-03", "slot": "08:45-10:00", "course_code": "NPD", "course_name": "New Product Development", "session": 4, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-10-03", "slot": "16:05-17:20", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 8, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-10-05", "slot": "14:30-15:45", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 9, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-10-06", "slot": "20:50-22:05", "course_code": "NPD", "course_name": "New Product Development", "session": 5, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-10-07", "slot": "16:05-17:20", "course_code": "SM", "course_name": "Service Marketing", "session": 10, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-07", "slot": "19:15-20:30", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 6, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-08", "slot": "14:30-15:45", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 10, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-10-08", "slot": "20:50-22:05", "course_code": "NPD", "course_name": "New Product Development", "session": 6, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-10-09", "slot": "08:45-10:00", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 10, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-10-09", "slot": "17:40-18:55", "course_code": "SM", "course_name": "Service Marketing", "session": 11, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-10", "slot": "19:15-20:30", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 7, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-12", "slot": "14:30-15:45", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 11, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-10-12", "slot": "20:50-22:05", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 11, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-10-13", "slot": "17:40-18:55", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 8, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-14", "slot": "16:05-17:20", "course_code": "SM", "course_name": "Service Marketing", "session": 12, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-14", "slot": "22:25-23:40", "course_code": "NPD", "course_name": "New Product Development", "session": 7, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-10-15", "slot": "14:30-15:45", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 12, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-10-15", "slot": "17:40-18:55", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 12, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-10-15", "slot": "22:25-23:40", "course_code": "SM", "course_name": "Service Marketing", "session": 13, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-16", "slot": "16:05-17:20", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 9, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-17", "slot": "08:45-10:00", "course_code": "NPD", "course_name": "New Product Development", "session": 8, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-10-17", "slot": "17:40-18:55", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 13, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-10-19", "slot": "19:15-20:30", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 13, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-10-19", "slot": "22:25-23:40", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 10, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-21", "slot": "16:05-17:20", "course_code": "NPD", "course_name": "New Product Development", "session": 9, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-10-21", "slot": "20:50-22:05", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 14, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-10-22", "slot": "16:05-17:20", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 14, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-10-23", "slot": "08:45-10:00", "course_code": "NPD", "course_name": "New Product Development", "session": 10, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-10-23", "slot": "14:30-15:45", "course_code": "SM", "course_name": "Service Marketing", "session": 14, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-24", "slot": "22:25-23:40", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 15, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-10-26", "slot": "14:30-15:45", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 11, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-26", "slot": "19:15-20:30", "course_code": "NPD", "course_name": "New Product Development", "session": 11, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-10-26", "slot": "20:50-22:05", "course_code": "SM", "course_name": "Service Marketing", "session": 15, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-27", "slot": "17:40-18:55", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 15, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-10-28", "slot": "08:45-10:00", "course_code": "SM", "course_name": "Service Marketing", "session": 16, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-28", "slot": "16:05-17:20", "course_code": "NPD", "course_name": "New Product Development", "session": 13, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-10-28", "slot": "19:15-20:30", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 12, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-10-29", "slot": "16:05-17:20", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 16, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-10-30", "slot": "17:40-18:55", "course_code": "SM", "course_name": "Service Marketing", "session": 17, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-10-31", "slot": "22:25-23:40", "course_code": "NPD", "course_name": "New Product Development", "session": 12, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-11-02", "slot": "14:30-15:45", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 17, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-11-03", "slot": "16:05-17:20", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 13, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-04", "slot": "14:30-15:45", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 16, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-11-04", "slot": "20:50-22:05", "course_code": "SM", "course_name": "Service Marketing", "session": 18, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-11-04", "slot": "22:25-23:40", "course_code": "NPD", "course_name": "New Product Development", "session": 14, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-11-05", "slot": "17:40-18:55", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 18, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-11-06", "slot": "08:45-10:00", "course_code": "NPD", "course_name": "New Product Development", "session": 15, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-11-06", "slot": "16:05-17:20", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 14, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-13", "slot": "17:40-18:55", "course_code": "SM", "course_name": "Service Marketing", "session": 19, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-11-13", "slot": "19:15-20:30", "course_code": "NPD", "course_name": "New Product Development", "session": 16, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-11-14", "slot": "17:40-18:55", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 15, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-14", "slot": "22:25-23:40", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 17, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-11-17", "slot": "22:25-23:40", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 16, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-18", "slot": "17:40-18:55", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 19, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-11-19", "slot": "14:30-15:45", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 17, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-19", "slot": "17:40-18:55", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 18, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-11-19", "slot": "22:25-23:40", "course_code": "NPD", "course_name": "New Product Development", "session": 17, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-11-21", "slot": "08:45-10:00", "course_code": "SM", "course_name": "Service Marketing", "session": 20, "faculty": "Dr. Harmanjit Singh", "section": "B", "room": "LR 07"}, {"date": "2026-11-23", "slot": "14:30-15:45", "course_code": "MSS", "course_name": "Markstrat Simulations (Core)", "session": 20, "faculty": "Dr. Harmanjit Singh", "section": "C", "room": "LR 06"}, {"date": "2026-11-23", "slot": "19:15-20:30", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 18, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-25", "slot": "08:45-10:00", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 19, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-25", "slot": "17:40-18:55", "course_code": "NPD", "course_name": "New Product Development", "session": 18, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-11-25", "slot": "20:50-22:05", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 19, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-11-27", "slot": "14:30-15:45", "course_code": "TQMS", "course_name": "Total Quality Management & Six Sigma", "session": 20, "faculty": "Dr. C.P. Garg", "section": "A", "room": "LR 02"}, {"date": "2026-11-27", "slot": "19:15-20:30", "course_code": "NPD", "course_name": "New Product Development", "session": 19, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}, {"date": "2026-11-28", "slot": "16:05-17:20", "course_code": "SNCM", "course_name": "Strategies for Negotiation & Conflict Management", "session": 20, "faculty": "Dr. Madhurima Mishra", "section": "A", "room": "LR 02"}, {"date": "2026-11-30", "slot": "17:40-18:55", "course_code": "NPD", "course_name": "New Product Development", "session": 20, "faculty": "Dr. Anurag Tiwari", "section": "A", "room": "LR 02"}]}; // { me: [...] (Shreya), friend: [...] (Amrita) }
+
+const COURSE_META = {
+  PFWM: { name: "Personal Finance & Wealth Management", color: "var(--c-pfwm)" },
+  TM:   { name: "Talent Management", color: "var(--c-tm)" },
+  SNCM: { name: "Strategies for Negotiation & Conflict Management", color: "var(--c-sncm)" },
+  SSM:  { name: "Strategic Storytelling for Managers", color: "var(--c-ssm)" },
+  MSS:  { name: "Markstrat Simulations (Core)", color: "var(--c-mss)" },
+  SM:   { name: "Service Marketing", color: "var(--c-sm)" },
+  NPD:  { name: "New Product Development", color: "var(--c-npd)" },
+  TQMS: { name: "Total Quality Management & Six Sigma", color: "var(--c-tqms)" }
+};
+
+const SECTION_FOR = {
+  me: { PFWM:'A', TM:'A', SNCM:'A', SSM:'B', MSS:'A', SM:'B' }
+};
+
+const SLOT_ORDER = ["08:45-10:00","10:20-11:35","11:55-1:10","14:30-15:45","16:05-17:20","17:40-18:55","19:15-20:30","20:50-22:05","22:25-23:40"];
+
+const byDatePerson = { me:{}, friend:{} };
+const maxSession = { me:{} };
+DATA.me.forEach(r => {
+  (byDatePerson.me[r.date] = byDatePerson.me[r.date] || []).push(r);
+  maxSession.me[r.course_code] = Math.max(maxSession.me[r.course_code] || 0, r.session);
+});
+DATA.friend.forEach(r => { (byDatePerson.friend[r.date] = byDatePerson.friend[r.date] || []).push(r); });
+
+const allDatesMine = Object.keys(byDatePerson.me).sort();
+const allDatesUnion = Array.from(new Set([...Object.keys(byDatePerson.me), ...Object.keys(byDatePerson.friend)])).sort();
+
+const MIN_DATE = "2026-09-12";
+const MAX_DATE = "2026-11-30";
+
+const weekdayFmt = new Intl.DateTimeFormat('en-US', { weekday: 'long' });
+const fullFmt = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+function toISO(d){ return d.toISOString().slice(0,10); }
+function fromISO(s){ const [y,m,dd] = s.split('-').map(Number); return new Date(Date.UTC(y, m-1, dd)); }
+function clampISO(iso){ if (iso < MIN_DATE) return MIN_DATE; if (iso > MAX_DATE) return MAX_DATE; return iso; }
+function todayISOWithinRange(){
+  const now = new Date();
+  const iso = toISO(new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())));
+  return clampISO(iso);
+}
+
+let current = todayISOWithinRange();
+let activeView = 'solo';
+
+/* ---- attendance storage (saved in this browser only, via localStorage) ---- */
+const ATTENDANCE_KEY = 'shreya_term5_attendance_v1';
+let attendance = {};
+try {
+  attendance = JSON.parse(localStorage.getItem(ATTENDANCE_KEY) || '{}');
+} catch (e) { attendance = {}; }
+
+function attKey(date, code, session){ return `${date}|${code}|${session}`; }
+function saveAttendance(){
+  try { localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(attendance)); }
+  catch (e) { /* storage unavailable, ignore */ }
+}
+function setAttendance(date, code, session, status){
+  const key = attKey(date, code, session);
+  if (attendance[key] === status){
+    delete attendance[key]; // tap again to clear
+  } else {
+    attendance[key] = status;
+  }
+  saveAttendance();
+}
+
+function findNextDateMine(fromISOExclusive){
+  for (const d of allDatesMine) if (d > fromISOExclusive) return d;
+  return null;
+}
+function findNextDateEither(fromISOExclusive){
+  for (const d of allDatesUnion) if (d > fromISOExclusive) return d;
+  return null;
+}
+
+function setTabsUI(){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === activeView));
+  const titleMap = {
+    solo: "Shreya's Term V Schedule",
+    together: "Shreya & Amrita — Term V",
+    attendance: "My Attendance"
+  };
+  const cohortMap = {
+    solo: 'PFWM · TM · SNCM · SSM · MSS · SM',
+    together: 'Shreya vs. Amrita, side by side',
+    attendance: 'Tap ✓ or ✗ after each class'
+  };
+  document.getElementById('pageTitle').textContent = titleMap[activeView];
+  document.getElementById('cohortLabel').textContent = cohortMap[activeView];
+}
+
+function render(){
+  document.getElementById('weekdayLabel').textContent = weekdayFmt.format(fromISO(current));
+  document.getElementById('fullDateLabel').textContent = fullFmt.format(fromISO(current));
+  document.getElementById('datePicker').value = current;
+  setTabsUI();
+
+  const content = document.getElementById('content');
+  content.innerHTML = '';
+
+  if (activeView === 'together'){
+    renderTogether(content);
+  } else if (activeView === 'attendance'){
+    renderAttendance(content);
+  } else {
+    renderSolo(content);
+  }
+
+  renderLegend();
+}
+
+function renderSolo(content){
+  const sessions = document.createElement('div');
+  sessions.className = 'sessions';
+  const todays = (byDatePerson.me[current] || []).slice().sort((a,b) => SLOT_ORDER.indexOf(a.slot) - SLOT_ORDER.indexOf(b.slot));
+
+  if (todays.length === 0){
+    const nextD = findNextDateMine(current);
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    let nextHtml = '';
+    if (nextD){
+      const label = fullFmt.format(fromISO(nextD));
+      nextHtml = `<div class="next-up">Next class: <a data-goto="${nextD}">${label}</a></div>`;
+    }
+    empty.innerHTML = `<div class="glyph">&#9679;</div><p>No sessions on this day.</p>${nextHtml}`;
+    sessions.appendChild(empty);
+    const link = empty.querySelector('[data-goto]');
+    if (link) link.addEventListener('click', () => { current = link.getAttribute('data-goto'); render(); });
+  } else {
+    todays.forEach(r => {
+      const meta = COURSE_META[r.course_code];
+      const card = document.createElement('div');
+      card.className = 'session-card';
+      card.style.setProperty('--course-color', meta.color);
+      card.innerHTML = `
+        <div class="session-time"><span class="t1">${r.slot}</span>Section ${r.section}</div>
+        <div class="session-main">
+          <div class="course-row">
+            <span class="course-code">${r.course_code}</span>
+            <span class="course-name">${meta.name}</span>
+          </div>
+          <div class="session-meta">
+            <span>Session <b>${r.session}</b> of ${maxSession.me[r.course_code]}</span>
+            <span>Room <b>${r.room}</b></span>
+            <span><b>${r.faculty}</b></span>
+          </div>
+        </div>`;
+      sessions.appendChild(card);
+    });
+  }
+  content.appendChild(sessions);
+}
+
+function renderAttendance(content){
+  const sessions = document.createElement('div');
+  sessions.className = 'sessions';
+  const todays = (byDatePerson.me[current] || []).slice().sort((a,b) => SLOT_ORDER.indexOf(a.slot) - SLOT_ORDER.indexOf(b.slot));
+
+  if (todays.length === 0){
+    const nextD = findNextDateMine(current);
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    let nextHtml = '';
+    if (nextD){
+      const label = fullFmt.format(fromISO(nextD));
+      nextHtml = `<div class="next-up">Next class: <a data-goto="${nextD}">${label}</a></div>`;
+    }
+    empty.innerHTML = `<div class="glyph">&#9679;</div><p>No classes to mark on this day.</p>${nextHtml}`;
+    sessions.appendChild(empty);
+    const link = empty.querySelector('[data-goto]');
+    if (link) link.addEventListener('click', () => { current = link.getAttribute('data-goto'); render(); });
+  } else {
+    todays.forEach(r => {
+      const meta = COURSE_META[r.course_code];
+      const key = attKey(r.date, r.course_code, r.session);
+      const status = attendance[key];
+
+      const card = document.createElement('div');
+      card.className = 'attendance-card';
+      card.style.setProperty('--course-color', meta.color);
+      card.innerHTML = `
+        <div class="top-row">
+          <div class="info">
+            <div class="course-row">
+              <span class="course-code">${r.course_code}</span>
+              <span class="course-name">${meta.name}</span>
+            </div>
+            <div class="session-meta">
+              <span>${r.slot}</span>
+              <span>Session <b>${r.session}</b> of ${maxSession.me[r.course_code]}</span>
+              <span>Room <b>${r.room}</b></span>
+            </div>
+          </div>
+          <div class="mark-buttons">
+            <button class="mark-btn present${status === 'present' ? ' selected' : ''}" aria-label="Mark present" data-status="present">&#10003;</button>
+            <button class="mark-btn absent${status === 'absent' ? ' selected' : ''}" aria-label="Mark absent" data-status="absent">&#10007;</button>
+          </div>
+        </div>`;
+
+      card.querySelectorAll('.mark-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          setAttendance(r.date, r.course_code, r.session, btn.dataset.status);
+          render();
+        });
+      });
+
+      sessions.appendChild(card);
+    });
+  }
+  content.appendChild(sessions);
+}
+
+function renderTogether(content){
+  const mineToday = (byDatePerson.me[current] || []);
+  const friendToday = (byDatePerson.friend[current] || []);
+
+  const byMine = {}; mineToday.forEach(r => byMine[r.slot] = r);
+  const byFriend = {}; friendToday.forEach(r => byFriend[r.slot] = r);
+
+  if (mineToday.length === 0 && friendToday.length === 0){
+    const nextD = findNextDateEither(current);
+    const banner = document.createElement('div');
+    banner.className = 'free-day-banner';
+    let nextHtml = '';
+    if (nextD){
+      const label = fullFmt.format(fromISO(nextD));
+      nextHtml = ` Next class for either of you: <a data-goto="${nextD}" style="color:var(--brass-deep);cursor:pointer;text-decoration:underline;">${label}</a>`;
+    }
+    banner.innerHTML = `Neither of you has class this day.${nextHtml}`;
+    content.appendChild(banner);
+    const link = banner.querySelector('[data-goto]');
+    if (link) link.addEventListener('click', () => { current = link.getAttribute('data-goto'); render(); });
+    return;
+  }
+
+  let lastIdx = -1;
+  SLOT_ORDER.forEach((slot, i) => { if (byMine[slot] || byFriend[slot]) lastIdx = i; });
+  const visibleSlots = SLOT_ORDER.slice(0, lastIdx + 1);
+
+  const overlapSlots = visibleSlots.filter(s => byMine[s] && byFriend[s]);
+  if (overlapSlots.length){
+    const banner = document.createElement('div');
+    banner.className = 'overlap-banner';
+    banner.textContent = `You're both in class at the same time during ${overlapSlots.length} slot${overlapSlots.length>1?'s':''} today.`;
+    content.appendChild(banner);
+  }
+
+  const headers = document.createElement('div');
+  headers.className = 'col-headers';
+  headers.innerHTML = `<div class="ch">Shreya</div><div class="ch">Amrita</div>`;
+  content.appendChild(headers);
+
+  visibleSlots.forEach(slot => {
+    const mine = byMine[slot];
+    const friend = byFriend[slot];
+
+    const row = document.createElement('div');
+    row.className = 'together-row';
+
+    const label = document.createElement('div');
+    label.className = 'together-slot-label';
+    label.textContent = slot;
+    row.appendChild(label);
+
+    const cells = document.createElement('div');
+    cells.className = 'together-cells';
+
+    const bothBusy = !!(mine && friend);
+
+    function buildCell(rec, who){
+      const cell = document.createElement('div');
+      if (!rec){
+        cell.className = 'together-cell free';
+        cell.textContent = 'Free';
+        return cell;
+      }
+      const meta = COURSE_META[rec.course_code];
+      cell.className = `together-cell ${who}` + (bothBusy ? ' overlap' : '');
+      cell.style.setProperty('--course-color', meta.color);
+      cell.innerHTML = `<div class="cc-name">${rec.course_code} · ${meta.name}</div>
+        <div class="cc-sub">Session ${rec.session} · Room ${rec.room} · ${rec.faculty}</div>`;
+      return cell;
+    }
+
+    cells.appendChild(buildCell(mine, 'mine'));
+    cells.appendChild(buildCell(friend, 'friend'));
+    row.appendChild(cells);
+    content.appendChild(row);
+  });
+}
+
+function renderLegend(){
+  const grid = document.getElementById('legendGrid');
+  const title = document.getElementById('legendTitle');
+  grid.innerHTML = '';
+
+  if (activeView === 'attendance'){
+    title.textContent = "Attendance so far";
+    const mapping = SECTION_FOR.me;
+    Object.keys(mapping).forEach(code => {
+      const meta = COURSE_META[code];
+      let present = 0, absent = 0;
+      Object.keys(attendance).forEach(k => {
+        const [d, c, s] = k.split('|');
+        if (c !== code) return;
+        if (attendance[k] === 'present') present++;
+        else if (attendance[k] === 'absent') absent++;
+      });
+      const marked = present + absent;
+      const total = maxSession.me[code];
+      const pct = marked > 0 ? Math.round((present / marked) * 100) : null;
+
+      const row = document.createElement('div');
+      row.className = 'attendance-summary-row';
+      row.innerHTML = `
+        <div class="code-part"><span class="legend-swatch" style="background:${meta.color}"></span><b>${code}</b> · ${present} present, ${absent} absent, ${total - marked} unmarked</div>
+        <div class="attendance-pct">${pct === null ? '—' : pct + '%'}</div>
+        <div class="attendance-bar-track"><div class="attendance-bar-fill" style="width:${pct === null ? 0 : pct}%; background:${pct !== null && pct < 75 ? 'var(--absent)' : 'var(--present)'};"></div></div>
+      `;
+      grid.appendChild(row);
+    });
+    grid.className = 'attendance-summary';
+    document.getElementById('footNote').textContent = "Saved right in this browser on this device — tap ✓ or ✗ again to clear a mark. Back up periodically if you clear your browser data or switch devices.";
+    return;
+  }
+  grid.className = 'legend-grid';
+
+  if (activeView === 'together'){
+    title.textContent = "Course key";
+    const whoHasMap = {};
+    Object.keys(COURSE_META).forEach(code => { whoHasMap[code] = []; });
+    DATA.me.forEach(r => { if (!whoHasMap[r.course_code].includes('Shreya')) whoHasMap[r.course_code].push('Shreya'); });
+    DATA.friend.forEach(r => { if (!whoHasMap[r.course_code].includes('Amrita')) whoHasMap[r.course_code].push('Amrita'); });
+    Object.keys(COURSE_META).forEach(code => {
+      if (whoHasMap[code].length === 0) return;
+      const meta = COURSE_META[code];
+      const item = document.createElement('div');
+      item.className = 'legend-item';
+      item.innerHTML = `<span class="legend-swatch" style="background:${meta.color}"></span><b>${code}</b> · ${whoHasMap[code].join(' & ')}`;
+      grid.appendChild(item);
+    });
+    document.getElementById('footNote').textContent = "Boxes outlined in gold mark slots where you're both in class at once.";
+  } else {
+    title.textContent = 'Courses this term';
+    const mapping = SECTION_FOR.me;
+    Object.keys(mapping).forEach(code => {
+      const meta = COURSE_META[code];
+      const done = DATA.me.filter(r => r.course_code === code && r.date <= current).length;
+      const total = maxSession.me[code];
+      const item = document.createElement('div');
+      item.className = 'legend-item';
+      item.innerHTML = `<span class="legend-swatch" style="background:${meta.color}"></span>
+        <b>${code}</b> · Sec ${mapping[code]}
+        <span class="prog">${done}/${total}</span>`;
+      grid.appendChild(item);
+    });
+    document.getElementById('footNote').textContent = "Section A for PFWM, TM, SNCM & MSS · Section B for SSM & SM.";
+  }
+}
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => { activeView = tab.dataset.view; render(); });
+});
+
+document.getElementById('prevDay').addEventListener('click', () => {
+  const d = fromISO(current); d.setUTCDate(d.getUTCDate() - 1);
+  const iso = toISO(d); if (iso >= MIN_DATE) { current = iso; render(); }
+});
+document.getElementById('nextDay').addEventListener('click', () => {
+  const d = fromISO(current); d.setUTCDate(d.getUTCDate() + 1);
+  const iso = toISO(d); if (iso <= MAX_DATE) { current = iso; render(); }
+});
+document.getElementById('datePicker').addEventListener('change', (e) => {
+  if (e.target.value){ current = clampISO(e.target.value); render(); }
+});
+document.getElementById('todayBtn').addEventListener('click', () => { current = todayISOWithinRange(); render(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') document.getElementById('prevDay').click();
+  if (e.key === 'ArrowRight') document.getElementById('nextDay').click();
+});
+
+render();
+</script>
+</body>
+</html>
